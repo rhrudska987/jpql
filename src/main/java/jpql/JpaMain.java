@@ -44,18 +44,16 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "select t from Team t";
-            List<Team> result = em.createQuery(query, Team.class).setFirstResult(0)
-                    .setMaxResults(2).getResultList();
+            int resultCount = em.createQuery("update Member m set m.age = 20").executeUpdate();
+            System.out.println("resultCount = " + resultCount);
+            em.clear(); // createQuery는 flush를 시키지만 clear을 따로하지 않아 만약 member1.getAge를 하게되면 영속성에서 가져오기 때문에 0이 출력됨
 
-            System.out.println("result = " + result.size());
 
-            for (Team team : result) {
-                System.out.println("team = " + team.getName() + "|" + team.getMembers().size());
-                for(Member member : team.getMembers()){
-                    System.out.println("member = " + member);
-                }
-            }
+            /*List<Member> result = em.createNamedQuery("Member.findByUserName", Member.class)
+                    .setParameter("username", "member1").getResultList();
+            for (Member member : result) {
+                System.out.println("member = " + member);
+            }*/
 
             tx.commit();
         }catch (Exception e){
